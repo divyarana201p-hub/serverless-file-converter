@@ -1,1043 +1,241 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Serverless File Converter</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #dbeafe, #f8fafc);
-            min-height: 100vh;
-            margin: 0;
-            padding: 40px 20px;
-        }
-
-        .container {
-            background: white;
-            max-width: 700px;
-            margin: auto;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        h1 {
-            text-align: center;
-            color: #222;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .converter {
-            text-align: center;
-        }
-
-        .file-box {
-            border: 2px dashed #93c5fd;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
-            background: #f8fbff;
-        }
-
-        .file-box p {
-            margin-top: 0;
-            color: #555;
-        }
-
-        input[type="file"] {
-            margin: 15px;
-            padding: 10px;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        select {
-            padding: 12px;
-            width: 90%;
-            max-width: 500px;
-            margin: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 15px;
-            background: white;
-        }
-
-        button {
-            padding: 12px 25px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 7px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 15px;
-        }
-
-        button:hover {
-            background: #1d4ed8;
-        }
-
-        button:disabled {
-            background: #94a3b8;
-            cursor: not-allowed;
-        }
-
-        #message {
-            margin-top: 25px;
-            font-weight: bold;
-        }
-
-        #loader {
-            display: none;
-            margin-top: 15px;
-            color: #2563eb;
-            font-weight: bold;
-        }
-
-        #download {
-            display: none;
-            margin-top: 20px;
-            padding: 12px 25px;
-            background: #16a34a;
-            color: white;
-            text-decoration: none;
-            border-radius: 7px;
-            font-weight: bold;
-        }
-
-        #download:hover {
-            background: #15803d;
-        }
-
-        .files-section {
-            margin-top: 40px;
-            border-top: 1px solid #ddd;
-            padding-top: 25px;
-        }
-
-        .files-section h2 {
-            text-align: center;
-            color: #222;
-        }
-
-        #fileListMessage {
-            text-align: center;
-            color: #666;
-        }
-
-        .file-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            background: #f8fafc;
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-        }
-
-        .file-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .file-name {
-            font-weight: bold;
-            word-break: break-all;
-        }
-
-        .file-size {
-            color: #666;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-
-        .download-file {
-            background: #16a34a;
-            color: white;
-            padding: 8px 12px;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        .download-file:hover {
-            background: #15803d;
-        }
-
-        .refresh-button {
-            display: block;
-            margin: 20px auto 0;
-            background: #64748b;
-        }
-
-        .refresh-button:hover {
-            background: #475569;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #777;
-            font-size: 13px;
-        }
-
-        @media (max-width: 600px) {
-
-            .container {
-                padding: 25px 18px;
-            }
-
-            h1 {
-                font-size: 25px;
-            }
-
-            .file-item {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .download-file {
-                text-align: center;
-            }
-
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serverless File Converter</title>
+<style>
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #eef4ff;
+    color: #1f2937;
+}
+.container {
+    width: min(900px, 94%);
+    margin: 35px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px #1e3a8a18;
+}
+h1, h2 { text-align: center; }
+.subtitle { text-align: center; color: #64748b; }
+.panel {
+    margin-top: 24px;
+    padding: 22px;
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    background: #f8fbff;
+}
+label { display: block; margin: 12px 0 8px; font-weight: bold; }
+input, select, button {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 15px;
+}
+button {
+    background: #2563eb;
+    color: white;
+    border: 0;
+    cursor: pointer;
+    font-weight: bold;
+}
+button:hover { background: #1d4ed8; }
+button:disabled { opacity: .6; cursor: wait; }
+.message { margin-top: 12px; overflow-wrap: anywhere; }
+.success { color: #15803d; }
+.error { color: #b91c1c; }
+ul { padding-left: 20px; }
+li { margin: 12px 0; overflow-wrap: anywhere; }
+a { color: #1d4ed8; }
+.small { font-size: 13px; color: #64748b; }
+</style>
 </head>
-
-
 <body>
-
-
 <div class="container">
-
-
-    <!-- HEADER -->
-
-    <h1>
-        ☁️ Serverless File Converter
-    </h1>
-
-
-    <p class="subtitle">
-        Convert and manage your files easily.
-    </p>
-
-
-
-    <!-- CONVERTER -->
-
-    <div class="converter">
-
-
-        <div class="file-box">
-
-            <p>
-                📁 Select a file to convert
-            </p>
-
-            <input
-                type="file"
-                id="fileInput"
-                accept=".xlsx,.xls"
-            >
-
-        </div>
-
-
-
-        <label for="format">
-
-            <strong>
-                Convert To:
-            </strong>
-
-        </label>
-
-
-        <br>
-
-
-        <select id="format">
-
-
-            <option value="excel-to-pdf">
-
-                📊 Excel → PDF
-
-            </option>
-
-
-            <option value="pdf-to-excel">
-
-                📄 PDF → Excel
-
-            </option>
-
-
-            <option value="image-to-pdf">
-
-                🖼️ JPG / JPEG / PNG → PDF
-
-            </option>
-
-
-            <option value="word-to-pdf">
-
-                📝 Word / DOC / DOCX → PDF
-
-            </option>
-
-
-            <option value="pdf-to-word">
-
-                📄 PDF → Word / DOCX
-
-            </option>
-
-
-        </select>
-
-
-        <br>
-
-
-        <button
-            type="button"
-            id="convertButton"
-            onclick="convertFile()"
-        >
-
-            🔄 Convert File
-
-        </button>
-
-
-        <p id="message">
-
-            Status: Ready
-
-        </p>
-
-
-        <div id="loader">
-
-            ⏳ Please wait... Converting your file
-
-        </div>
-
-
-        <a
-            id="download"
-            target="_blank"
-        >
-
-            ⬇️ Download Converted File
-
-        </a>
-
-
-    </div>
-
-
-
-    <!-- MY FILES -->
-
-    <div class="files-section">
-
-
-        <h2>
-            📁 My Files
-        </h2>
-
-
-        <p id="fileListMessage">
-            Loading files...
-        </p>
-
-
-        <div id="fileList"></div>
-
-
-        <button
-            type="button"
-            class="refresh-button"
-            onclick="loadFiles()"
-        >
-
-            🔄 Refresh Files
-
-        </button>
-
-
-    </div>
-
-
-
-    <!-- FOOTER -->
-
-    <div class="footer">
-
-        Serverless File Converter
-        • Diploma Project
-
-    </div>
-
-
+    <h1>☁️ Serverless File Converter</h1>
+    <p class="subtitle">Convert and manage your files with Filebase cloud storage.</p>
+
+    <section class="panel">
+        <h2>Convert a File</h2>
+        <form id="convertForm">
+            <label for="file">Select file</label>
+            <input id="file" name="file" type="file" required>
+
+            <label for="conversion">Conversion type</label>
+            <select id="conversion" required>
+                <option value="/convert/excel-to-pdf">Excel to PDF (.xlsx, .xls)</option>
+                <option value="/convert/pdf-to-excel">PDF to Excel (.pdf)</option>
+                <option value="/convert/pdf-to-word">PDF to Word (.pdf to .docx)</option>
+                <option value="/convert/word-to-pdf">Word to PDF (.docx)</option>
+                <option value="/convert/image-to-pdf">Image to PDF (.jpg, .jpeg, .png)</option>
+            </select>
+            <button id="convertButton" type="submit">Convert and Save to Cloud</button>
+        </form>
+        <div id="convertMessage" class="message" role="status"></div>
+    </section>
+
+    <section class="panel">
+        <h2>Upload a File</h2>
+        <form id="uploadForm">
+            <label for="uploadFile">Choose a file</label>
+            <input id="uploadFile" name="file" type="file" required>
+            <button id="uploadButton" type="submit">Upload to Filebase</button>
+        </form>
+        <div id="uploadMessage" class="message" role="status"></div>
+    </section>
+
+    <section class="panel">
+        <h2>Files in Cloud Storage</h2>
+        <button id="refreshButton" type="button">Refresh File List</button>
+        <div id="fileListMessage" class="message" role="status"></div>
+        <ul id="fileList"></ul>
+    </section>
+
+    <p class="small">Note: Scanned PDFs may not convert correctly without OCR. Complex document layouts may change during conversion.</p>
 </div>
 
-
-
 <script>
+const API = "http://localhost:5000";
 
+const convertForm = document.getElementById("convertForm");
+const convertMessage = document.getElementById("convertMessage");
+const convertButton = document.getElementById("convertButton");
+const uploadForm = document.getElementById("uploadForm");
+const uploadMessage = document.getElementById("uploadMessage");
+const uploadButton = document.getElementById("uploadButton");
+const fileList = document.getElementById("fileList");
+const fileListMessage = document.getElementById("fileListMessage");
+const refreshButton = document.getElementById("refreshButton");
 
-    // ==========================================
-    // GET ELEMENTS
-    // ==========================================
+function showMessage(element, message, isError = false) {
+    element.textContent = message;
+    element.className = "message " + (isError ? "error" : "success");
+}
 
+async function readResponse(response) {
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(data.error || data.message || `Request failed (${response.status})`);
+    }
+    return data;
+}
 
-    const fileInput =
-        document.getElementById("fileInput");
+convertForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
+    const file = document.getElementById("file").files[0];
+    if (!file) {
+        showMessage(convertMessage, "Please select a file.", true);
+        return;
+    }
 
-    const formatSelect =
-        document.getElementById("format");
+    const route = document.getElementById("conversion").value;
+    const formData = new FormData();
+    formData.append("file", file);
 
+    convertButton.disabled = true;
+    showMessage(convertMessage, "Converting file. Please wait...");
 
-    const convertButton =
-        document.getElementById("convertButton");
+    try {
+        const response = await fetch(API + route, {
+            method: "POST",
+            body: formData
+        });
+        const data = await readResponse(response);
 
+        showMessage(convertMessage, data.message || "Conversion complete.");
+        await loadFiles();
+    } catch (error) {
+        showMessage(convertMessage, error.message, true);
+        console.error("Conversion error:", error);
+    } finally {
+        convertButton.disabled = false;
+    }
+});
 
+uploadForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-    // ==========================================
-    // CHANGE FILE TYPE
-    // ==========================================
+    const file = document.getElementById("uploadFile").files[0];
+    if (!file) {
+        showMessage(uploadMessage, "Please select a file.", true);
+        return;
+    }
 
+    const formData = new FormData();
+    formData.append("file", file);
+    uploadButton.disabled = true;
+    showMessage(uploadMessage, "Uploading to Filebase...");
 
-    formatSelect.addEventListener(
-        "change",
-        function () {
+    try {
+        const response = await fetch(API + "/upload", {
+            method: "POST",
+            body: formData
+        });
+        const data = await readResponse(response);
+        showMessage(uploadMessage, data.message || "Upload successful.");
+        uploadForm.reset();
+        await loadFiles();
+    } catch (error) {
+        showMessage(uploadMessage, error.message, true);
+        console.error("Upload error:", error);
+    } finally {
+        uploadButton.disabled = false;
+    }
+});
 
+async function loadFiles() {
+    fileList.innerHTML = "";
+    showMessage(fileListMessage, "Loading files...");
 
-            if (
-                this.value ===
-                "excel-to-pdf"
-            ) {
+    try {
+        const response = await fetch(API + "/files");
+        const files = await readResponse(response);
 
-                fileInput.accept =
-                    ".xlsx,.xls";
-
-            }
-
-
-            else if (
-                this.value ===
-                "pdf-to-excel"
-            ) {
-
-                fileInput.accept =
-                    ".pdf";
-
-            }
-
-
-            else if (
-                this.value ===
-                "image-to-pdf"
-            ) {
-
-                fileInput.accept =
-                    ".jpg,.jpeg,.png";
-
-            }
-
-
-            else if (
-                this.value ===
-                "word-to-pdf"
-            ) {
-
-                fileInput.accept =
-                    ".doc,.docx";
-
-            }
-
-
-            else if (
-                this.value ===
-                "pdf-to-word"
-            ) {
-
-                fileInput.accept =
-                    ".pdf";
-
-            }
-
-
-            fileInput.value = "";
-
-
-            document.getElementById(
-                "message"
-            ).innerText =
-                "Status: Ready";
-
-        }
-    );
-
-
-
-    // ==========================================
-    // CONVERT FILE
-    // ==========================================
-
-
-    async function convertFile() {
-
-
-        const message =
-            document.getElementById(
-                "message"
-            );
-
-
-        const download =
-            document.getElementById(
-                "download"
-            );
-
-
-        const loader =
-            document.getElementById(
-                "loader"
-            );
-
-
-        const file =
-            fileInput.files[0];
-
-
-        const format =
-            formatSelect.value;
-
-
-
-        // CHECK FILE
-
-        if (!file) {
-
-            message.innerText =
-                "⚠️ Please select a file first.";
-
-            loader.style.display =
-                "none";
-
-            download.style.display =
-                "none";
-
+        if (!Array.isArray(files) || files.length === 0) {
+            fileListMessage.textContent = "No files available in your bucket yet.";
+            fileListMessage.className = "message";
             return;
-
         }
 
-
-
-        // ==========================================
-        // CHECK FILE EXTENSION
-        // ==========================================
-
-
-        const fileName =
-            file.name.toLowerCase();
-
-
-        let validFile = true;
-
-
-        if (
-            format ===
-            "excel-to-pdf"
-        ) {
-
-            validFile =
-                fileName.endsWith(".xlsx") ||
-                fileName.endsWith(".xls");
-
-        }
-
-
-        else if (
-            format ===
-            "pdf-to-excel"
-        ) {
-
-            validFile =
-                fileName.endsWith(".pdf");
-
-        }
-
-
-        else if (
-            format ===
-            "image-to-pdf"
-        ) {
-
-            validFile =
-                fileName.endsWith(".jpg") ||
-                fileName.endsWith(".jpeg") ||
-                fileName.endsWith(".png");
-
-        }
-
-
-        else if (
-            format ===
-            "word-to-pdf"
-        ) {
-
-            validFile =
-                fileName.endsWith(".doc") ||
-                fileName.endsWith(".docx");
-
-        }
-
-
-        else if (
-            format ===
-            "pdf-to-word"
-        ) {
-
-            validFile =
-                fileName.endsWith(".pdf");
-
-        }
-
-
-
-        if (!validFile) {
-
-            message.innerText =
-                "⚠️ Please select a valid file for the selected conversion.";
-
-            return;
-
-        }
-
-
-
-        // ==========================================
-        // START CONVERSION
-        // ==========================================
-
-
-        message.innerText =
-            "Converting " +
-            file.name +
-            "...";
-
-
-        loader.style.display =
-            "block";
-
-
-        download.style.display =
-            "none";
-
-
-        convertButton.disabled =
-            true;
-
-
-
-        // ==========================================
-        // FORM DATA
-        // ==========================================
-
-
-        const formData =
-            new FormData();
-
-
-        formData.append(
-            "file",
-            file
-        );
-
-
-
-        // ==========================================
-        // SEND TO BACKEND
-        // ==========================================
-
-
-        try {
-
-
-            const response =
-                await fetch(
-
-                    "http://localhost:5000/convert/" +
-                    format,
-
-                    {
-
-                        method: "POST",
-
-                        body: formData
-
-                    }
-
-                );
-
-
-            const data =
-                await response.json();
-
-
-
-            // ERROR
-
-            if (!response.ok) {
-
-                loader.style.display =
-                    "none";
-
-                convertButton.disabled =
-                    false;
-
-                message.innerText =
-                    "❌ " +
-                    (
-                        data.message ||
-                        "Conversion failed."
-                    );
-
-                return;
-
-            }
-
-
-
-            // SUCCESS
-
-            loader.style.display =
-                "none";
-
-
-            convertButton.disabled =
-                false;
-
-
-            message.innerText =
-                "✅ " +
-                data.message;
-
-
-            download.href =
-                data.downloadUrl;
-
-
-            download.style.display =
-                "inline-block";
-
-
-            loadFiles();
-
-
-        }
-
-
-        catch (error) {
-
-
-            console.error(
-                "Conversion error:",
-                error
-            );
-
-
-            loader.style.display =
-                "none";
-
-
-            convertButton.disabled =
-                false;
-
-
-            message.innerText =
-                "❌ Unable to connect to backend.";
-
-        }
-
+        fileListMessage.textContent = `Found ${files.length} file(s).`;
+        fileListMessage.className = "message success";
+
+        files.forEach(file => {
+            const item = document.createElement("li");
+            const name = document.createElement("span");
+            name.textContent = `${file.name} (${formatSize(file.size || 0)}) `;
+
+            const link = document.createElement("a");
+            link.href = API + "/download/" + encodeURIComponent(file.name);
+            link.textContent = "Download";
+            link.setAttribute("download", "");
+
+            item.appendChild(name);
+            item.appendChild(link);
+            fileList.appendChild(item);
+        });
+    } catch (error) {
+        showMessage(fileListMessage, error.message, true);
+        console.error("File-list error:", error);
     }
-
-
-
-    // ==========================================
-    // LOAD MY FILES
-    // ==========================================
-
-
-    async function loadFiles() {
-
-
-        const fileList =
-            document.getElementById(
-                "fileList"
-            );
-
-
-        const fileListMessage =
-            document.getElementById(
-                "fileListMessage"
-            );
-
-
-        try {
-
-
-            const response =
-                await fetch(
-                    "http://localhost:5000/files"
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Unable to get files"
-                );
-
-            }
-
-
-            const files =
-                await response.json();
-
-
-            fileList.innerHTML = "";
-
-
-            if (
-                files.length === 0
-            ) {
-
-                fileListMessage.innerText =
-                    "No files available.";
-
-                return;
-
-            }
-
-
-            fileListMessage.innerText =
-                "Your stored files:";
-
-
-
-            files.forEach(
-                file => {
-
-
-                    const fileItem =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    fileItem.className =
-                        "file-item";
-
-
-                    const size =
-                        formatFileSize(
-                            file.size
-                        );
-
-
-                    fileItem.innerHTML = `
-
-                        <div class="file-info">
-
-                            <div class="file-name">
-
-                                📄
-                                ${escapeHtml(
-                                    file.name
-                                )}
-
-                            </div>
-
-
-                            <div class="file-size">
-
-                                ${size}
-
-                            </div>
-
-                        </div>
-
-
-                        <a
-
-                            class="download-file"
-
-                            href="${file.downloadUrl}"
-
-                            target="_blank"
-
-                        >
-
-                            ⬇️ Download
-
-                        </a>
-
-                    `;
-
-
-                    fileList.appendChild(
-                        fileItem
-                    );
-
-                }
-            );
-
-
-        }
-
-
-        catch (error) {
-
-
-            console.error(
-                "File list error:",
-                error
-            );
-
-
-            fileListMessage.innerText =
-                "❌ Unable to load files.";
-
-        }
-
-    }
-
-
-
-    // ==========================================
-    // FORMAT FILE SIZE
-    // ==========================================
-
-
-    function formatFileSize(bytes) {
-
-
-        if (bytes === 0) {
-
-            return "0 Bytes";
-
-        }
-
-
-        const units = [
-            "Bytes",
-            "KB",
-            "MB",
-            "GB"
-        ];
-
-
-        const index =
-            Math.floor(
-
-                Math.log(bytes) /
-                Math.log(1024)
-
-            );
-
-
-        return (
-
-            parseFloat(
-
-                (
-                    bytes /
-                    Math.pow(
-                        1024,
-                        index
-                    )
-                )
-                .toFixed(2)
-
-            )
-
-            +
-
-            " " +
-
-            units[index]
-
-        );
-
-    }
-
-
-
-    // ==========================================
-    // SECURITY
-    // ==========================================
-
-
-    function escapeHtml(text) {
-
-
-        const div =
-            document.createElement(
-                "div"
-            );
-
-
-        div.textContent =
-            text;
-
-
-        return div.innerHTML;
-
-    }
-
-
-
-    // ==========================================
-    // LOAD FILES ON PAGE OPEN
-    // ==========================================
-
-
-    loadFiles();
-
-
+}
+
+function formatSize(bytes) {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+refreshButton.addEventListener("click", loadFiles);
+loadFiles();
 </script>
-
-
 </body>
-
 </html>
