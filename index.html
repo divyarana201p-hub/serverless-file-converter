@@ -1,0 +1,742 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f5f7ff">
+<title>CloudConvert | File Converter</title>
+
+<style>
+:root {
+    --primary: #4f46e5;
+    --primary-dark: #3730a3;
+    --background: #f5f7ff;
+    --surface: #ffffff;
+    --text: #172033;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --success: #15803d;
+    --danger: #b91c1c;
+    --radius: 18px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(ellipse at top left, #e0e7ff 0, transparent 40%),
+        var(--background);
+    line-height: 1.6;
+}
+
+button, input, select { font: inherit; }
+button, a, input, select { -webkit-tap-highlight-color: transparent; }
+
+button:focus-visible, a:focus-visible,
+input:focus-visible, select:focus-visible {
+    outline: 3px solid #a5b4fc;
+    outline-offset: 3px;
+}
+
+.topbar {
+    background: rgba(255,255,255,.88);
+    border-bottom: 1px solid var(--border);
+}
+
+.nav {
+    max-width: 1120px;
+    margin: auto;
+    padding: 17px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: -.5px;
+}
+
+.brand-icon {
+    width: 43px;
+    height: 43px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    color: white;
+    font-size: 23px;
+    background: linear-gradient(135deg, #6366f1, #4338ca);
+    box-shadow: 0 5px 14px #4f46e530;
+}
+
+.pill {
+    padding: 7px 12px;
+    border-radius: 30px;
+    background: #ecfdf5;
+    color: #047857;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+main {
+    width: min(1060px, 92%);
+    margin: 0 auto;
+    padding: 42px 0 60px;
+}
+
+.hero {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 30px;
+}
+
+.eyebrow {
+    display: inline-block;
+    color: var(--primary);
+    background: #eef2ff;
+    border: 1px solid #e0e7ff;
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+h1 {
+    margin: 16px 0 10px;
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.13;
+    letter-spacing: -1.8px;
+}
+
+.gradient-text {
+    color: var(--primary);
+}
+
+.hero p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 30px 0;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 17px;
+    background: rgba(255,255,255,.82);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+}
+
+.feature-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: #eef2ff;
+    font-size: 20px;
+}
+
+.feature strong { display: block; font-size: 14px; }
+.feature small { display: block; color: var(--muted); font-size: 12px; }
+
+.workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: 0 12px 35px #1e293b08;
+    min-width: 0;
+}
+
+.card-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    margin-bottom: 22px;
+}
+
+.heading-icon {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    background: #eef2ff;
+    border-radius: 14px;
+    font-size: 22px;
+}
+
+h2 {
+    margin: 0;
+    font-size: 20px;
+    letter-spacing: -.4px;
+    line-height: 1.4;
+}
+
+.card-heading p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+label {
+    display: block;
+    margin: 17px 0 7px;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+input[type="file"], select {
+    width: 100%;
+    min-height: 48px;
+    padding: 11px;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 11px;
+    color: var(--text);
+}
+
+input[type="file"] {
+    font-size: 13px;
+    background: #f8fafc;
+}
+
+input[type="file"]::file-selector-button {
+    border: 0;
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 8px 11px;
+    border-radius: 7px;
+    margin-right: 10px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+select { cursor: pointer; }
+
+.btn {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border: 0;
+    border-radius: 11px;
+    cursor: pointer;
+    font-weight: 750;
+    font-size: 14px;
+    transition: transform .15s, background .15s, box-shadow .15s;
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.btn:disabled {
+    opacity: .65;
+    cursor: wait;
+}
+
+.btn-primary {
+    color: white;
+    background: linear-gradient(120deg, #6366f1, #4338ca);
+    box-shadow: 0 5px 14px #4f46e526;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: linear-gradient(120deg, #4f46e5, #3730a3);
+}
+
+.btn-secondary {
+    color: #3730a3;
+    background: #eef2ff;
+    border: 1px solid #e0e7ff;
+}
+
+.btn-secondary:hover:not(:disabled) { background: #e0e7ff; }
+
+.message {
+    display: none;
+    margin-top: 15px;
+    padding: 11px 13px;
+    border-radius: 10px;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.message.visible { display: block; }
+.message.success { background: #f0fdf4; color: var(--success); }
+.message.error { background: #fef2f2; color: var(--danger); }
+.message.info { background: #eff6ff; color: #1d4ed8; }
+
+.cloud-card { margin-top: 22px; }
+
+.cloud-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 17px;
+}
+
+.cloud-toolbar .btn {
+    width: auto;
+    min-height: 40px;
+    margin: 0;
+    padding: 9px 13px;
+    white-space: nowrap;
+}
+
+.file-count {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 20px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.file-list {
+    display: grid;
+    gap: 10px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px;
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: border-color .15s, background .15s;
+}
+
+.file-item:hover {
+    border-color: #c7d2fe;
+    background: #fafaff;
+}
+
+.file-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    background: #f1f5f9;
+    border-radius: 10px;
+    font-size: 19px;
+}
+
+.file-info { flex: 1; min-width: 0; }
+
+.file-name {
+    display: block;
+    font-weight: 700;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.file-size {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.download-link {
+    padding: 7px 10px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: #eef2ff;
+    color: #4338ca;
+    font-size: 12px;
+    font-weight: 750;
+    text-decoration: none;
+}
+
+.download-link:hover { background: #e0e7ff; }
+
+.empty-state {
+    padding: 26px 14px;
+    text-align: center;
+    color: var(--muted);
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    font-size: 13px;
+}
+
+.empty-state span { display: block; font-size: 28px; margin-bottom: 7px; }
+
+.note {
+    margin-top: 20px;
+    padding: 14px 16px;
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    border-radius: 12px;
+    color: #92400e;
+    font-size: 12px;
+}
+
+footer {
+    padding: 23px 15px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+}
+
+@media (max-width: 760px) {
+    main { padding-top: 30px; }
+    .workspace { grid-template-columns: 1fr; }
+    .features { grid-template-columns: 1fr; gap: 9px; }
+    .feature { padding: 12px 15px; }
+    .card { padding: 20px; }
+}
+
+@media (max-width: 420px) {
+    .nav { padding: 13px 15px; }
+    .brand { font-size: 15px; gap: 8px; }
+    .brand-icon { width: 37px; height: 37px; }
+    .pill { font-size: 10px; padding: 6px 8px; }
+    main { width: 94%; }
+    h1 { letter-spacing: -1px; }
+    .card { padding: 16px; }
+    .file-item { gap: 8px; padding: 9px; }
+    .file-icon { width: 35px; height: 35px; }
+    .download-link { padding: 7px; }
+}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+    <nav class="nav" aria-label="Main navigation">
+        <div class="brand">
+            <div class="brand-icon" aria-hidden="true">☁</div>
+            <span>CloudConvert</span>
+        </div>
+        <span class="pill">● Filebase Storage</span>
+    </nav>
+</header>
+
+<main>
+    <section class="hero">
+        <span class="eyebrow">Simple · Fast · Convenient</span>
+        <h1>Your files, <span class="gradient-text">transformed.</span></h1>
+        <p>Convert documents and images, upload files, and access your cloud library from one simple workspace.</p>
+    </section>
+
+    <section class="features" aria-label="Features">
+        <div class="feature">
+            <div class="feature-icon" aria-hidden="true">🔄</div>
+            <div><strong>Easy conversion</strong><small>Five conversion options</small></div>
+        </div>
+        <div class="feature">
+            <div class="feature-icon" aria-hidden="true">☁️</div>
+            <div><strong>Cloud storage</strong><small>Files saved to Filebase</small></div>
+        </div>
+        <div class="feature">
+            <div class="feature-icon" aria-hidden="true">📱</div>
+            <div><strong>Responsive design</strong><small>Works on small screens</small></div>
+        </div>
+    </section>
+
+    <div class="workspace">
+        <section class="card">
+            <div class="card-heading">
+                <div class="heading-icon" aria-hidden="true">✨</div>
+                <div>
+                    <h2>Convert a file</h2>
+                    <p>Choose a file and select the output format.</p>
+                </div>
+            </div>
+
+            <form id="convertForm">
+                <label for="file">Select your file</label>
+                <input id="file" name="file" type="file" required>
+
+                <label for="conversion">Conversion type</label>
+                <select id="conversion" required>
+                    <option value="/convert/excel-to-pdf">Excel to PDF (.xlsx, .xls)</option>
+                    <option value="/convert/pdf-to-excel">PDF to Excel (.pdf)</option>
+                    <option value="/convert/pdf-to-word">PDF to Word (.pdf to .docx)</option>
+                    <option value="/convert/word-to-pdf">Word to PDF (.docx)</option>
+                    <option value="/convert/image-to-pdf">Image to PDF (.jpg, .jpeg, .png)</option>
+                </select>
+
+                <button class="btn btn-primary" id="convertButton" type="submit">
+                    <span aria-hidden="true">⚡</span> Convert and save to cloud
+                </button>
+            </form>
+            <div id="convertMessage" class="message" role="status" aria-live="polite"></div>
+        </section>
+
+        <section class="card">
+            <div class="card-heading">
+                <div class="heading-icon" aria-hidden="true">📤</div>
+                <div>
+                    <h2>Upload a file</h2>
+                    <p>Store a file directly in your cloud bucket.</p>
+                </div>
+            </div>
+
+            <form id="uploadForm">
+                <label for="uploadFile">Choose a file to upload</label>
+                <input id="uploadFile" name="file" type="file" required>
+                <button class="btn btn-secondary" id="uploadButton" type="submit">
+                    <span aria-hidden="true">☁️</span> Upload to Filebase
+                </button>
+            </form>
+            <div id="uploadMessage" class="message" role="status" aria-live="polite"></div>
+        </section>
+    </div>
+
+    <section class="card cloud-card">
+        <div class="cloud-toolbar">
+            <div class="card-heading" style="margin:0">
+                <div class="heading-icon" aria-hidden="true">🗂️</div>
+                <div>
+                    <h2>Cloud file library</h2>
+                    <p>Your files stored in Filebase.</p>
+                </div>
+            </div>
+            <button class="btn btn-secondary" id="refreshButton" type="button">↻ Refresh</button>
+        </div>
+
+        <div style="margin-bottom:13px">
+            <span id="fileCount" class="file-count">Loading files...</span>
+        </div>
+
+        <div id="fileListMessage" class="message" role="status" aria-live="polite"></div>
+        <div id="fileList" class="file-list"></div>
+    </section>
+
+    <aside class="note">
+        <strong>Note:</strong> Scanned PDFs may need OCR for accurate extraction. Complex layouts, tables, and formatting may change during conversion.
+    </aside>
+</main>
+
+<footer>
+    CloudConvert · Serverless File Converter & Cloud Storage Service
+</footer>
+
+<script>
+const API = "http://localhost:5000";
+
+const convertForm = document.getElementById("convertForm");
+const convertMessage = document.getElementById("convertMessage");
+const convertButton = document.getElementById("convertButton");
+const uploadForm = document.getElementById("uploadForm");
+const uploadMessage = document.getElementById("uploadMessage");
+const uploadButton = document.getElementById("uploadButton");
+const fileList = document.getElementById("fileList");
+const fileListMessage = document.getElementById("fileListMessage");
+const fileCount = document.getElementById("fileCount");
+const refreshButton = document.getElementById("refreshButton");
+
+function showMessage(element, message, type = "success") {
+    element.textContent = message;
+    element.className = "message visible " + type;
+}
+
+function clearMessage(element) {
+    element.textContent = "";
+    element.className = "message";
+}
+
+async function readResponse(response) {
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(data.error || data.message || `Request failed (${response.status})`);
+    }
+    return data;
+}
+
+convertForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const file = document.getElementById("file").files[0];
+    if (!file) {
+        showMessage(convertMessage, "Please select a file.", "error");
+        return;
+    }
+
+    const route = document.getElementById("conversion").value;
+    const formData = new FormData();
+    formData.append("file", file);
+
+    convertButton.disabled = true;
+    convertButton.textContent = "Converting... Please wait";
+    showMessage(convertMessage, "Your file is being converted and saved to cloud storage.", "info");
+
+    try {
+        const response = await fetch(API + route, {
+            method: "POST",
+            body: formData
+        });
+        const data = await readResponse(response);
+
+        showMessage(convertMessage, data.message || "Conversion complete.", "success");
+        convertForm.reset();
+        await loadFiles();
+    } catch (error) {
+        showMessage(convertMessage, error.message, "error");
+        console.error("Conversion error:", error);
+    } finally {
+        convertButton.disabled = false;
+        convertButton.innerHTML = '<span aria-hidden="true">⚡</span> Convert and save to cloud';
+    }
+});
+
+uploadForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const file = document.getElementById("uploadFile").files[0];
+    if (!file) {
+        showMessage(uploadMessage, "Please choose a file to upload.", "error");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    uploadButton.disabled = true;
+    uploadButton.textContent = "Uploading...";
+    showMessage(uploadMessage, "Uploading your file to Filebase...", "info");
+
+    try {
+        const response = await fetch(API + "/upload", {
+            method: "POST",
+            body: formData
+        });
+        const data = await readResponse(response);
+
+        showMessage(uploadMessage, data.message || "Upload successful.", "success");
+        uploadForm.reset();
+        await loadFiles();
+    } catch (error) {
+        showMessage(uploadMessage, error.message, "error");
+        console.error("Upload error:", error);
+    } finally {
+        uploadButton.disabled = false;
+        uploadButton.innerHTML = '<span aria-hidden="true">☁️</span> Upload to Filebase';
+    }
+});
+
+function formatSize(bytes) {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function fileIcon(name) {
+    const extension = name.split(".").pop().toLowerCase();
+    if (["pdf"].includes(extension)) return "📕";
+    if (["doc", "docx"].includes(extension)) return "📝";
+    if (["xls", "xlsx", "csv"].includes(extension)) return "📊";
+    if (["jpg", "jpeg", "png", "gif", "webp"].includes(extension)) return "🖼️";
+    return "📄";
+}
+
+async function loadFiles() {
+    refreshButton.disabled = true;
+    refreshButton.textContent = "Loading...";
+    fileList.replaceChildren();
+    fileCount.textContent = "Loading files...";
+    showMessage(fileListMessage, "Connecting to cloud storage...", "info");
+
+    try {
+        const response = await fetch(API + "/files");
+        const files = await readResponse(response);
+
+        if (!Array.isArray(files)) {
+            throw new Error("The server returned an unexpected file-list response.");
+        }
+
+        clearMessage(fileListMessage);
+        fileCount.textContent = `${files.length} file${files.length === 1 ? "" : "s"}`;
+
+        if (files.length === 0) {
+            fileList.innerHTML = '<div class="empty-state"><span>☁️</span>No files yet. Upload or convert a file to get started.</div>';
+            return;
+        }
+
+        files.forEach(file => {
+            const item = document.createElement("div");
+            item.className = "file-item";
+
+            const icon = document.createElement("div");
+            icon.className = "file-icon";
+            icon.setAttribute("aria-hidden", "true");
+            icon.textContent = fileIcon(file.name);
+
+            const info = document.createElement("div");
+            info.className = "file-info";
+
+            const name = document.createElement("span");
+            name.className = "file-name";
+            name.textContent = file.name;
+
+            const size = document.createElement("span");
+            size.className = "file-size";
+            size.textContent = formatSize(file.size || 0);
+
+            const link = document.createElement("a");
+            link.className = "download-link";
+            link.href = API + "/download/" + encodeURIComponent(file.name);
+            link.textContent = "Download";
+            link.setAttribute("download", "");
+            link.setAttribute("aria-label", `Download ${file.name}`);
+
+            info.append(name, size);
+            item.append(icon, info, link);
+            fileList.appendChild(item);
+        });
+    } catch (error) {
+        fileCount.textContent = "Unavailable";
+        showMessage(fileListMessage, error.message, "error");
+        fileList.innerHTML = '<div class="empty-state"><span>⚠️</span>Could not load cloud files. Check that your backend is running.</div>';
+        console.error("File-list error:", error);
+    } finally {
+        refreshButton.disabled = false;
+        refreshButton.textContent = "↻ Refresh";
+    }
+}
+
+refreshButton.addEventListener("click", loadFiles);
+loadFiles();
+</script>
+</body>
+</html>
